@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Spese</title>
+    <script>
+        async function salvaTransazione() {
+            const tipo = document.getElementById('tipo').value;
+            const importo = document.getElementById('importo').value;
+            const descrizione = document.getElementById('descrizione').value;
+            const dataTransazione = document.getElementById('data').value;
+
+            //validazione importo
+            if (!importo || isNaN(importo)) {
+                alert("Inserisci un importo valido");
+                return;
+            }
+
+            if (!dataTransazione) {
+                alert("Inserisci una data valida");
+                return;
+            }
+
+            const data = {
+                tipo: tipo,
+                importo: parseFloat(importo),
+                descrizione: descrizione,
+                data: dataTransazione
+            };
+
+            const scriptUrl = "https://script.google.com/macros/s/AKfycbxo9AuHaRQVW3ea8enbGkC1WOxfSHhsuyjsJXfXJz1LkzBBRtanSYZKR1EmotBN1jMKAg/exec";
+
+            try {
+                let response = await fetch(scriptUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    alert("Transazione salvata!")
+                } else {
+                    alert("Errore")
+                }
+            } catch (error) {
+                console.error("Errore:", error);  // Log dell'errore nel console
+                alert("Errore durante il salvataggio.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Gestione Spese</h2>
+    <label for="tipo">Tipo:</label>
+    <select id="tipo">
+        <option value="entrata">Entrata</option>
+        <option value="uscita">Uscita</option>
+    </select>
+    <br>
+    <label for="importo">Importo (€):</label>
+    <input type="number" id="importo" step="0.01">
+    <br>
+    <label for="descrizione">Descrizione:</label>
+    <input type="text" id="descrizione">
+    <br>
+    <label for="data">Data:</label>
+    <input type="date" id="data">
+    <br>
+    <button onclick="salvaTransazione()">Salva</button>
+</body>
+</html>
